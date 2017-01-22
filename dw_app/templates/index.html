@@ -1,0 +1,139 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user info</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .picker__date-display, .picker__weekday-display{
+            background-color: #CCC;
+        }
+        #leftform{
+            margin-top: 40px;
+        }
+        .main {
+          /*visibility: hidden;*/
+          margin: 0 auto;
+        }
+        .progress {
+          position: absolute;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="nav-extended deep-purple">
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">
+          <img class="responsive-img" style="width: 70px;" src="{% static 'logo-emblem.svg' %}" />
+      </a>
+{#      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>#}
+      <ul id="nav-mobile" class="right">
+        <li><a href="accounts/logout">Вийти</a></li>
+      </ul>
+{#      <ul class="side-nav" id="mobile-demo">#}
+{#        <li><a href="collapsible.html">Вийти</a></li>#}
+{#      </ul>#}
+      <ul class="tabs tabs-transparent">
+        <li class="tab" id="tab1"><a class="active" href="#test1">Головна</a></li>
+        <li class="tab" id="tab2"><a href="#test2">Основні показники</a></li>
+        <li class="tab" id="tab3"><a href="#test4" id="click">Товари</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="row">
+
+    <!-- preloader  -->
+
+      <div class="main">
+        <div class="progress deep-purple accent-1" id="progressbar">
+            <div class="indeterminate deep-purple accent-2"></div>
+        </div> 
+      </div>
+
+    <!-- end preloader -->
+
+    <div class="col s12 m4 l4">
+      <div class="container">
+        <form id="leftform">{% csrf_token %}
+            <input type="hidden" name="datefrom" value="{{user_info.date_from|date:"m d Y"}}">
+            <input type="hidden" name="dateto" value="{{user_info.date_to|date:"m d Y"}}">
+            <div class="input-field col s12 m12" >
+                <select multiple id="shops">
+                    <option value="all" disabled>Всі</option>
+                    {% for shopn, name in shops.items %}
+                    <option value="{{ shopn }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <label><b>Виберіть ваші магазини</b></label>
+            </div>
+            <div class="input-field col s12 m12">
+                <select multiple  id="category">
+                    <option value="all" disabled>Всі</option>
+                    {% for cat in categorys %}
+                        {% for k, v in cat.items %}
+                            <option value="{{ k }}">{{ v }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+                <label><b>Виберіть категорії товарів</b></label>
+            </div>
+            <div class="input-field col s12 m12" id="date1-field">
+                <label for="date1"><b>Перша дата&nbsp</b><em>напр. вчора</em></label>
+                <input id="date1" type="text" class="datepicker"/>
+            </div>
+            <div class="input-field col s12 m12" id="date2-field">
+                <label><b>Друга дата (для порівняння)</b> <em>напр. позавчора</em></label>
+                <input id="date2" type="text" class="datepicker""/>
+            </div>
+            <div class="input-field col s12 m12 ">
+                <button class="btn waves-effect waves-light deep-purple" type="submit" name="action" id="sub">Отримати дані
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+
+
+        </form>
+      </div>
+
+    </div>
+
+      <div class="col s12 m8 l8"> <!-- Note that "m8 l9" was added -->
+          <div id="test1" class="col s12">
+              <br><br>
+              <div class="card-panel deep-purple lighten-5" id="main-data-msg">
+              <p class="flow-text">
+                Вітаємо Вас на сервісі, <b>{{ user_info.name }}</b>.
+              </p>
+              <p> Ви можете переглянути аналітичну інформацію по магазинах
+                 {% for shopn, name in shops.items %}{{ name }},&nbsp {% endfor %} <br>за період від&nbsp <i>{{ user_info.date_from|date:"d M Y" }}</i>&nbsp &nbspпо&nbsp <i>{{ user_info.date_to|date:"d M Y" }}</i>.
+              </p>
+          </div>
+              
+
+
+          </div>
+          <div id="test2" class="col s12">
+              <p class="flow-text">Основні показники</p>
+                <table id='main-data' class="responsive-table">
+                <!-- json data here! -->
+              </table>
+          </div>
+          <div id="test4" class="col s12">              
+              <!-- Таблички тут -->
+          </div>
+      </div>
+
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pickadate.js/3.5.6/compressed/picker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="{% static 'moment-with-locales.js' %}"></script>
+    <script src="{% static 'main.js' %}"></script>
+</body>
+</html>
+
