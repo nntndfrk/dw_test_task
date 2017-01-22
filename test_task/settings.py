@@ -90,6 +90,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DW_LOGIN = 'test1@mail.com'
 DW_PASSWORD = 'test2@cbe47a5c9466fe6df05f04264349f32b'
